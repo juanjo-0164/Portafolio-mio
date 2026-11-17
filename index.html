@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Juanjo · Desarrollador frontend</title>
+<meta name="description" content="Portafolio de Juan José Estrada Salazar, desarrollador frontend en formación.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --fondo: #13292A;
+  --fondo-2: #1B3837;
+  --texto: #F5EFE3;
+  --suave: #B9C9C0;   
+  --coral: #FF7A59;
+  --mostaza: #F6BD4A;
+  --menta: #8BE0BC;
+  --lila: #C9B8FF;
+  --serif: "Fraunces", Georgia, "Times New Roman", serif;
+  --sans: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+:root[data-theme="light"] {
+  --fondo: #FFF6EA;
+  --fondo-2: #FCE8D2;
+  --texto: #1D2B2A;
+  --suave: #4E6360;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font: 400 17px/1.65 var(--sans);
+  overflow-x: hidden;
+  padding-top: env(safe-area-inset-top, 0px);
+  -webkit-text-size-adjust: 100%;
+  transition: background-color .4s ease, color .4s ease;
+}
+a:focus-visible, button:focus-visible {
+  outline: 3px solid var(--mostaza);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+img, svg { display: block; max-width: 100%; }
+button { font: inherit; cursor: pointer; }
+
+/* Lluvia de código de fondo */
+#lluvia {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .32;
+  transition: opacity .6s ease;
+}
+#lluvia.apagada { opacity: 0; }
+
+/* Brillo que sigue el cursor */
+.halo {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 360px;
+  height: 360px;
+  margin: -180px 0 0 -180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--coral) 26%, transparent), transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.halo.activo { opacity: 1; }
+
+.lienzo { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding: 0 22px; }
+
+/* Barra de navegación */
+.barra {
+  position: sticky;
+  top: 12px;
+  z-index: 10;
+  margin: 16px auto 0;
+  width: fit-content;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 8px 8px 18px;
+  background: var(--fondo-2);
+  border-radius: 999px;
+  box-shadow: 0 10px 30px -12px rgba(0,0,0,.35);
+}
+.barra strong { font-family: var(--serif); font-weight: 900; margin-right: 12px; font-size: 18px; }
+.marca, .enlaces, .controles { display: flex; align-items: center; }
+.menu-btn { display: none; width: 58px; height: 58px; border-radius: 50%; border: 0; background: var(--mostaza); color: #2B1E05; font-size: 24px; font-weight: 800; align-items: center; justify-content: center; box-shadow: 0 10px 24px -8px rgba(0,0,0,.5); }
+.enlaces { gap: 4px; }
+.controles { gap: 6px; margin-left: 6px; }
+.barra a {
+  color: var(--texto);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+  transition: background-color .2s ease, color .2s ease;
+}
+.barra a:hover { background: var(--texto); color: var(--fondo); }
+.barra a.activa { background: var(--mostaza); color: #2B1E05; }
+.ctrl {
+  height: 42px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 2px solid var(--texto);
+  background: transparent;
+  color: var(--texto);
+  font-weight: 800;
+  font-size: 14px;
+  transition: transform .3s ease, background-color .2s ease, color .2s ease;
+}
+@media (hover: hover) { .ctrl:hover { transform: translateY(-2px); } }
+.ctrl[aria-pressed="true"] { background: var(--menta); color: #13292A; border-color: var(--menta); }
+.ctrl.redondo { width: 42px; padding: 0; font-size: 18px; }
+@media (hover: hover) { .ctrl.redondo:hover { transform: rotate(20deg); } }
+.barra .ctrl { margin-left: 4px; }
+
+/* Hero */
+.hero { position: relative; padding: 60px 0 30px; min-height: 70vh; }
+.saludo { font-weight: 800; color: var(--coral); font-size: 18px; margin-bottom: 6px; }
+.hero h1 {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: clamp(2.9rem, 9vw, 7.4rem);
+  line-height: .92;
+  letter-spacing: -.035em;
+  position: relative;
+  z-index: 1;
+  overflow-wrap: break-word;
+}
+.hero h1 .linea2 { display: block; padding-left: clamp(0px, 5vw, 60px); }
+.hero h1 em { font-style: italic; font-weight: 400; color: var(--mostaza); }
+.intro {
+  position: relative;
+  z-index: 1;
+  max-width: 44ch;
+  margin: 30px 0 0 clamp(0px, 5vw, 60px);
+  font-size: 1.12rem;
+  color: var(--suave);
+}
+.cursor-escribe::after {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  margin-left: 4px;
+  background: var(--coral);
+  vertical-align: -2px;
+  animation: parpadeo 1s steps(1) infinite;
+}
+.cursor-escribe.listo::after { display: none; }
+@keyframes parpadeo { 50% { opacity: 0; } }
+
+/* Columna de foto y sticker: a la derecha, sin tapar el nombre */
+.columna-foto {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 220px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+}
+.foto {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 58% 42% 46% 54% / 44% 56% 44% 56%;
+  background: linear-gradient(140deg, var(--coral), var(--mostaza) 55%, var(--menta));
+  display: grid;
+  place-items: center;
+  transform: rotate(-6deg);
+  transition: transform .6s cubic-bezier(.2,.8,.2,1);
+}
+.foto:hover { transform: rotate(4deg) scale(1.04); }
+.foto span {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 4.6rem;
+  color: var(--fondo);
+  transform: rotate(6deg);
+  letter-spacing: -.04em;
+}
+.sticker {
+  max-width: 210px;
+  background: var(--menta);
+  color: #13292A;
+  font-weight: 800;
+  font-size: 15px;
+  line-height: 1.3;
+  padding: 12px 16px;
+  border-radius: 14px 4px 14px 4px;
+  transform: rotate(4deg);
+  box-shadow: 6px 6px 0 var(--lila);
+}
+
+.datos {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 44px 0 0 clamp(0px, 5vw, 60px);
+  list-style: none;
+}
+.datos li { background: var(--fondo-2); padding: 9px 16px; border-radius: 999px; font-size: 15px; }
+.datos li b { color: var(--mostaza); font-weight: 800; margin-right: 4px; }
+.datos a { color: var(--texto); overflow-wrap: anywhere; }
+
+/* Secciones */
+.seccion { position: relative; padding: 80px 0; }
+.titulo {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  letter-spacing: -.03em;
+  line-height: 1;
+  margin-bottom: 40px;
+  max-width: 14ch;
+}
+.titulo em { font-weight: 400; font-style: italic; color: var(--coral); }
+
+/* Proyectos */
+.proyectos {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 26px;
+  position: relative;
+  z-index: 1;
+}
+.caso {
+  --r: 0deg;
+  --tx: 0deg;
+  --ty: 0deg;
+  position: relative;
+  padding: 32px 30px 28px;
+  border-radius: 28px 60px 28px 60px;
+  background: var(--fondo-2);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transform: perspective(900px) rotateX(var(--tx)) rotateY(var(--ty)) rotate(var(--r));
+  transition: transform .35s ease, box-shadow .35s ease;
+  transform-style: preserve-3d;
+}
+.caso:hover { box-shadow: 0 24px 40px -24px rgba(0,0,0,.5); }
+.caso h3 { font-family: var(--serif); font-weight: 900; font-size: 1.8rem; line-height: 1.05; letter-spacing: -.02em; }
+.caso p { color: var(--suave); }
+.caso .etiquetas { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 8px; }
+.caso .etiquetas span { font-size: 13px; font-weight: 800; padding: 5px 11px; border-radius: 999px; background: var(--fondo); }
+.caso .acciones-caso { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.caso .boton {
+  font-weight: 800;
+  color: var(--fondo);
+  background: var(--texto);
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 0;
+  font-size: 15px;
+  text-decoration: none;
+  transition: background-color .2s ease;
+}
+.caso .boton:hover { background: var(--mostaza); color: #2B1E05; }
+.detalle {
+  display: none;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--fondo);
+  font-size: 15px;
+  color: var(--texto);
+}
+.caso.abierto .detalle { display: block; animation: aparece .35s ease; }
+@keyframes aparece { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+.p1 { grid-column: 1 / span 7; background: var(--coral); color: #2A0F08; --r: -1.2deg; }
+.p1 h3, .p1 .etiquetas span { color: #2A0F08; }
+.p1 p { color: #4A2418; }
+.p1 .etiquetas span { background: #FFB8A3; }
+.p1 .boton { background: #2A0F08; color: var(--coral); }
+.p1 .boton:hover { background: #4A2418; color: var(--coral); }
+.p1 .detalle { background: #FFB8A3; color: #2A0F08; }
+
+.p2 { grid-column: 9 / span 4; margin-top: 70px; background: var(--mostaza); color: #2B1E05; --r: 1.5deg; }
+.p2 h3 { color: #2B1E05; }
+.p2 p { color: #4D3A10; }
+.p2 .etiquetas span { background: #FFD98A; color: #2B1E05; }
+.p2 .boton { background: #2B1E05; color: var(--mostaza); }
+.p2 .boton:hover { background: #4D3A10; color: var(--mostaza); }
+.p2 .detalle { background: #FFD98A; color: #2B1E05; }
+
+.p3 { grid-column: 2 / span 5; background: var(--menta); color: #0D2A1F; --r: .8deg; margin-top: -10px; }
+.p3 h3 { color: #0D2A1F; }
+.p3 p { color: #24493B; }
+.p3 .etiquetas span { background: #C5F2DD; color: #0D2A1F; }
+.p3 .boton { background: #0D2A1F; color: var(--menta); }
+.p3 .boton:hover { background: #24493B; color: var(--menta); }
+.p3 .detalle { background: #C5F2DD; color: #0D2A1F; }
+
+.p4 { grid-column: 7 / span 6; background: var(--lila); color: #22144A; --r: -2deg; margin-top: 20px; }
+.p4 h3 { color: #22144A; }
+.p4 p { color: #3E2D74; }
+.p4 .etiquetas span { background: #E3DAFF; color: #22144A; }
+.p4 .detalle { background: #E3DAFF; color: #22144A; }
+
+/* Habilidades */
+.nube { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px; position: relative; z-index: 1; }
+.nube button {
+  background: var(--fondo);
+  color: var(--texto);
+  border: 2px solid var(--texto);
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-weight: 800;
+  transition: transform .25s ease, background-color .25s ease, color .25s ease;
+}
+.nube button:hover { transform: translateY(-3px) rotate(-2deg); background: var(--texto); color: var(--fondo); }
+.nube button[aria-pressed="true"] { background: var(--mostaza); color: #2B1E05; border-color: var(--mostaza); }
+.nube .gr { font-size: 2rem; font-family: var(--serif); font-weight: 900; padding: 8px 24px; border-color: var(--coral); color: var(--coral); }
+.nube .md { font-size: 1.25rem; border-color: var(--mostaza); color: var(--mostaza); }
+.nube .pq { font-size: 1rem; border-color: var(--menta); color: var(--menta); }
+.nube .rot1 { transform: rotate(-3deg); }
+.nube .rot2 { transform: rotate(2.5deg); }
+.nube .rot3 { transform: rotate(-1.5deg); }
+.nube .sol { background: var(--lila); color: #22144A; border-color: var(--lila); }
+.explica {
+  margin-top: 28px;
+  min-height: 70px;
+  max-width: 56ch;
+  font-size: 1.1rem;
+  padding: 18px 22px;
+  border-left: 4px solid var(--coral);
+  background: var(--fondo-2);
+  border-radius: 0 18px 18px 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* Sobre mí */
+.sobre { display: grid; grid-template-columns: 1fr 1.3fr; gap: 50px; align-items: start; position: relative; z-index: 1; }
+.sobre .lado {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 3.4vw, 2.5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+}
+.sobre .lado em { font-weight: 400; color: var(--menta); }
+.globo {
+  background: var(--fondo-2);
+  padding: 36px 38px;
+  border-radius: 40px 40px 40px 8px;
+  font-size: 1.1rem;
+}
+.globo p + p { margin-top: 16px; }
+.tres {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 26px;
+  position: relative;
+  z-index: 1;
+}
+.tres article {
+  padding: 26px 24px;
+  border-radius: 26px 26px 26px 6px;
+  border: 2px solid var(--texto);
+  background: var(--fondo);
+  transition: transform .3s ease;
+}
+.tres article:hover { transform: translateY(-6px); }
+.tres article:nth-child(2) { border-color: var(--mostaza); border-radius: 6px 26px 26px 26px; }
+.tres article:nth-child(3) { border-color: var(--menta); }
+.tres h3 { font-family: var(--serif); font-weight: 900; font-size: 1.35rem; margin-bottom: 10px; }
+.tres p { color: var(--suave); font-size: 15px; }
+
+/* Formación */
+.linea-tiempo {
+  list-style: none;
+  position: relative;
+  padding-left: 30px;
+  display: grid;
+  gap: 26px;
+  z-index: 1;
+}
+.linea-tiempo::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(var(--coral), var(--mostaza), var(--menta));
+}
+.linea-tiempo li { position: relative; padding: 4px 0; transition: transform .3s ease; }
+.linea-tiempo li:hover { transform: translateX(8px); }
+.linea-tiempo li::before {
+  content: "";
+  position: absolute;
+  left: -30px;
+  top: 8px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: var(--fondo);
+  border: 3px solid var(--coral);
+  transition: background-color .3s ease;
+}
+.linea-tiempo li:hover::before { background: var(--coral); }
+.linea-tiempo li:nth-child(2)::before { border-color: var(--mostaza); }
+.linea-tiempo li:nth-child(2):hover::before { background: var(--mostaza); }
+.linea-tiempo li:nth-child(3)::before { border-color: var(--menta); }
+.linea-tiempo li:nth-child(3):hover::before { background: var(--menta); }
+.linea-tiempo li:nth-child(4)::before { border-color: var(--lila); }
+.linea-tiempo li:nth-child(4):hover::before { background: var(--lila); }
+.linea-tiempo h3 { font-family: var(--serif); font-weight: 900; font-size: 1.4rem; line-height: 1.15; }
+.linea-tiempo p { color: var(--suave); margin-top: 4px; }
+.linea-tiempo .sub { font-weight: 800; color: var(--texto); font-size: 15px; }
+
+/* Contacto: menta a lila */
+.contacto {
+  position: relative;
+  margin: 30px 0 60px;
+  padding: 70px 56px;
+  border-radius: 60px 22px 60px 22px;
+  background: linear-gradient(120deg, var(--menta), var(--lila));
+  color: #13292A;
+  overflow: hidden;
+  z-index: 1;
+}
+.contacto h2 {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: clamp(3rem, 8vw, 6rem);
+  line-height: .9;
+  letter-spacing: -.04em;
+  position: relative;
+  z-index: 1;
+}
+.contacto h2 em { font-weight: 400; font-style: italic; color: #2A0F08; }
+.contacto p { margin-top: 20px; max-width: 46ch; font-size: 1.1rem; position: relative; z-index: 1; }
+.acciones { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; position: relative; z-index: 1; }
+.acciones a, .acciones button {
+  font-weight: 800;
+  text-decoration: none;
+  padding: 15px 26px;
+  border-radius: 999px;
+  font-size: 16px;
+  overflow-wrap: anywhere;
+  transition: transform .2s ease, background-color .2s ease, color .2s ease;
+}
+.acciones a:hover, .acciones button:hover { transform: translateY(-2px); }
+.acciones .fuerte { background: #13292A; color: var(--menta); border: 0; }
+.acciones .suave { background: transparent; color: #13292A; border: 2px solid #13292A; }
+.acciones .suave:hover { background: #13292A; color: var(--menta); }
+.acciones button.copiar { background: transparent; color: #13292A; border: 2px dashed #13292A; }
+.acciones button.copiar.ok { background: #13292A; color: var(--mostaza); border-color: #13292A; }
+.contacto .circulo {
+  position: absolute;
+  right: -80px;
+  bottom: -90px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(19,41,42,.12);
+  pointer-events: none;
+}
+
+footer { padding: 0 0 40px; color: var(--suave); font-size: 15px; text-align: center; }
+
+/* Tablet */
+@media (max-width: 960px) {
+  .tres { grid-template-columns: 1fr; }
+}
+
+/* Móvil */
+@media (max-width: 860px) {
+  .lienzo { padding: 0 18px; }
+  .hero { padding-top: 36px; min-height: 0; }
+  .columna-foto { position: relative; right: auto; top: auto; width: 170px; margin: 34px 0 0; align-items: flex-start; }
+  .foto { transform: rotate(-4deg); }
+  .sticker { transform: rotate(-3deg); }
+  .intro, .datos, .hero h1 .linea2 { margin-left: 0; }
+  .hero h1 .linea2 { padding-left: 0; }
+  .proyectos { grid-template-columns: 1fr; }
+  .p1, .p2, .p3, .p4 { grid-column: auto; margin-top: 0; }
+  .sobre { grid-template-columns: 1fr; gap: 22px; }
+  .seccion { padding: 60px 0; }
+  .contacto { padding: 46px 24px; border-radius: 40px 16px 40px 16px; }
+  .barra { position: fixed; top: auto; right: 16px; bottom: 16px; left: auto; margin: 0; width: auto; max-width: calc(100vw - 32px); z-index: 20; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; padding: 0; background: none; border-radius: 0; box-shadow: none; }
+  .barra.abierta { background: var(--fondo-2); padding: 18px; border-radius: 26px; width: min(300px, calc(100vw - 32px)); align-items: stretch; box-shadow: 0 18px 40px -16px rgba(0,0,0,.5); max-height: 70vh; overflow-y: auto; }
+  .marca, .enlaces, .controles { display: none; }
+  .barra.abierta .marca { display: flex; margin-bottom: 10px; }
+  .barra.abierta .marca strong { font-size: 20px; }
+  .barra.abierta .enlaces { display: flex; flex-direction: column; gap: 2px; }
+  .barra.abierta .enlaces a { font-size: 16px; padding: 11px 14px; border-radius: 14px; }
+  .barra.abierta .controles { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid color-mix(in srgb, var(--texto) 20%, transparent); }
+  .barra .ctrl { margin-left: 0; }
+  .menu-btn { display: flex; }
+  .halo { display: none; }
+}
+@media (max-width: 420px) {
+  .barra a { padding: 7px 9px; font-size: 14px; }
+  .nube .gr { font-size: 1.6rem; }
+  .caso { padding: 26px 22px 24px; }
+  .globo { padding: 26px 22px; }
+}
+@media (max-width: 860px) {
+  .barra { position: fixed; top: auto; right: 16px; bottom: 88px; left: auto; width: min(300px, calc(100vw - 32px)); max-width: none; margin: 0; padding: 18px; gap: 0; display: none; flex-direction: column; align-items: stretch; background: var(--fondo-2); border-radius: 26px; box-shadow: 0 18px 40px -16px rgba(0,0,0,.5); z-index: 20; max-height: 70vh; overflow-x: hidden; overflow-y: auto; }
+  .barra.abierta { display: flex; animation: subir .35s cubic-bezier(.2,.8,.2,1); transform-origin: bottom right; }
+  @keyframes subir { from { opacity: 0; transform: translateY(16px) scale(.94); } to { opacity: 1; transform: none; } }
+  .barra.abierta .marca { display: flex; margin: 0 0 10px; padding: 0; }
+  .barra.abierta .enlaces { display: flex; flex-direction: column; align-items: stretch; gap: 2px; }
+  .barra.abierta .enlaces a { display: block; text-align: left; font-size: 16px; padding: 11px 14px; border-radius: 14px; }
+  .barra.abierta .controles { display: flex; flex-direction: column; align-items: stretch; gap: 8px; margin: 14px 0 0; padding-top: 14px; border-top: 1px solid color-mix(in srgb, var(--texto) 20%, transparent); }
+  .barra .controles .ctrl { width: 100%; height: 44px; margin: 0; border-radius: 14px; font-size: 15px; }
+  .menu-btn { display: flex; position: fixed; right: 16px; bottom: 16px; left: auto; top: auto; z-index: 21; }
+}
+.blandas { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; position: relative; z-index: 1; }
+.blanda { padding: 28px 26px; border-radius: 30px 8px 30px 8px; background: var(--fondo-2); transition: transform .3s ease; }
+.blanda:hover { transform: translateY(-5px) rotate(-.6deg); }
+.blanda h3 { font-family: var(--serif); font-weight: 900; font-size: 1.4rem; margin-bottom: 10px; }
+.blanda .situacion { color: var(--suave); font-size: 16px; }
+.b1 { border-left: 6px solid var(--coral); }
+.b2 { border-left: 6px solid var(--mostaza); }
+.b3 { border-left: 6px solid var(--menta); }
+.b4 { border-left: 6px solid var(--lila); }
+.descarga { margin-top: 36px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px; position: relative; z-index: 1; }
+.descarga p { color: var(--suave); font-size: 15px; }
+.btn-pdf { font-weight: 800; background: var(--texto); color: var(--fondo); border: 0; border-radius: 999px; padding: 14px 24px; font-size: 16px; transition: background-color .2s ease; }
+.btn-pdf:hover { background: var(--mostaza); color: #2B1E05; }
+@media (max-width: 760px) { .blandas { grid-template-columns: 1fr; } }
+@media print {
+  body, .lienzo { background: #fff !important; color: #111 !important; background-image: none !important; }
+  #lluvia, .halo, .barra, .menu-btn, .btn-pdf, .descarga, .contacto, .acciones-caso, .circulo { display: none !important; }
+  .caso, .globo, .blanda, .tres article, .linea-tiempo li, .sticker, .datos li, .explica, .nube button, .etiquetas span { background: transparent !important; color: #111 !important; box-shadow: none !important; border: 1px solid #999 !important; transform: none !important; }
+  .caso *, .blanda *, .tres *, .linea-tiempo * { color: #111 !important; }
+  .caso h3, .blanda h3, .tres h3 { color: #111 !important; }
+  .detalle { display: block !important; background: transparent !important; color: #111 !important; }
+  .hero, .seccion { padding: 20px 0 !important; min-height: 0 !important; }
+  .columna-foto { position: static !important; width: 110px !important; }
+  .proyectos, .blandas, .tres { grid-template-columns: 1fr !important; }
+  .caso, .p1, .p2, .p3, .p4 { grid-column: auto !important; margin-top: 0 !important; }
+  .titulo { font-size: 1.8rem !important; margin-bottom: 16px !important; }
+  .foto span { color: #111 !important; }
+  section, .caso, .blanda { break-inside: avoid; }
+  a { color: #111 !important; }
+}
+@media (max-width: 860px) {
+  .barra.abierta { display: block !important; }
+  .barra.abierta .marca, .barra.abierta .enlaces, .barra.abierta .controles { display: block !important; width: 100%; }
+  .barra.abierta .enlaces a { display: block; margin: 2px 0; }
+  .barra.abierta .controles { margin-top: 14px; }
+  .barra.abierta .controles .ctrl { display: flex; align-items: center; justify-content: center; margin: 0 0 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="lluvia" aria-hidden="true"></canvas>
+<div class="halo" id="halo" aria-hidden="true"></div>
+
+<div class="lienzo">
+  <nav class="barra" id="barra" aria-label="Secciones">
+    <div class="marca"><strong>Juanjo</strong></div>
+    <div class="enlaces">
+      <a href="#proyectos">Proyectos</a>
+      <a href="#habilidades">Habilidades</a>
+      <a href="#sobre-mi">Sobre mí</a>
+      <a href="#formacion">Formación</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+    <div class="controles">
+      <button class="ctrl" id="musica" type="button" aria-pressed="false">♪ Música</button>
+      <button class="ctrl" id="lluvia-btn" type="button" aria-pressed="true">&lt;/&gt; Código</button>
+      <button class="ctrl redondo" id="tema" type="button" aria-label="Cambiar entre tema claro y oscuro">☾</button>
+    </div>
+  </nav>
+  <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="barra" aria-label="Abrir menú">☰</button>
+
+  <header class="hero">
+    <p class="saludo">Hola, soy</p>
+    <h1>Juan José<span class="linea2"><em>Estrada</em> Salazar</span></h1>
+    <p class="intro">
+      <span class="cursor-escribe" id="rol">Desarrollador frontend en formación</span>.
+      Armo páginas web claras, bonitas y fáciles de usar con HTML, CSS y JavaScript, y me gusta que cada detalle tenga sentido.
+    </p>
+
+    <ul class="datos">
+      <li><b>Programa</b> ADSO, SENA</li>
+      <li><b>Stack</b> HTML · CSS · JS · Bootstrap</li>
+      <li><b>Código</b> <a href="https://github.com/juanjo-0164">github.com/juanjo-0164</a></li>
+    </ul>
+
+    <div class="columna-foto">
+      <div class="foto" aria-hidden="true"><span>JJ</span></div>
+      <div class="sticker">Buscando mi primera oportunidad</div>
+    </div>
+  </header>
+
+  <section id="proyectos" class="seccion" aria-labelledby="t-proyectos">
+    <h2 class="titulo" id="t-proyectos">Proyectos</h2>
+    <ul class="proyectos">
+
+      <li class="caso p1" data-inclinable>
+        <h3>Mini Inventario de Videojuegos</h3>
+        <p>Agrego, edito, busco y elimino videojuegos. Todo se guarda en el navegador con LocalStorage, así que no se pierde al recargar.</p>
+        <div class="etiquetas"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>LocalStorage</span></div>
+        <div class="acciones-caso">
+          <button class="boton" type="button" aria-expanded="false">Ver detalle</button>
+          <a class="boton" href="https://github.com/juanjo-0164">Ver código</a>
+        </div>
+        <div class="detalle">Incluye formulario para agregar videojuegos, búsqueda, edición y eliminación. El código está separado en módulos de JavaScript para que sea más fácil de mantener.</div>
+      </li>
+
+      <li class="caso p2" data-inclinable>
+        <h3>Laboratorio de temas</h3>
+        <p>Página con componentes de Bootstrap 5.3 y temas que cambian con variables CSS y el atributo data-tema.</p>
+        <div class="etiquetas"><span>Bootstrap 5.3</span><span>Variables CSS</span></div>
+        <div class="acciones-caso">
+          <button class="boton" type="button" aria-expanded="false">Ver detalle</button>
+          <a class="boton" href="https://github.com/juanjo-0164">Ver código</a>
+        </div>
+        <div class="detalle">Todos los componentes están en una sola página. Cambiar de tema no requiere recargar: solo cambia el valor de data-tema y las variables CSS hacen el resto.</div>
+      </li>
+
+      <li class="caso p3" data-inclinable>
+        <h3>Landing con Bootstrap</h3>
+        <p>Página de presentación responsiva armada con la rejilla y los componentes de Bootstrap.</p>
+        <div class="etiquetas"><span>Bootstrap</span><span>HTML</span><span>CSS</span></div>
+        <div class="acciones-caso">
+          <button class="boton" type="button" aria-expanded="false">Ver detalle</button>
+          <a class="boton" href="https://github.com/juanjo-0164">Ver código</a>
+        </div>
+        <div class="detalle">Se adapta al celular y al computador gracias a la rejilla de Bootstrap. Es mi primer proyecto con este framework.</div>
+      </li>
+
+      <li class="caso p4" data-inclinable>
+        <h3>ZYRA</h3>
+        <p>Plataforma de bienestar emocional con inteligencia artificial, hecha en equipo durante la formación. Mi parte fue la interfaz y la organización del trabajo.</p>
+        <div class="etiquetas"><span>Trabajo en equipo</span><span>Interfaz</span><span>IA</span></div>
+        <div class="acciones-caso">
+          <button class="boton" type="button" aria-expanded="false">Ver detalle</button>
+        </div>
+        <div class="detalle">Proyecto de grupo. Aprendí a repartir tareas, a acordar cómo se ve la interfaz y a integrar el trabajo de todos.</div>
+      </li>
+
+    </ul>
+  </section>
+
+  <section id="habilidades" class="seccion" aria-labelledby="t-habilidades">
+    <h2 class="titulo" id="t-habilidades">Habilidades técnicas</h2>
+    <div class="nube">
+      <button class="gr rot1" type="button" data-uso="JavaScript: es la base de la lógica de mis aplicaciones, como el Mini Inventario de Videojuegos, con módulos y LocalStorage.">JavaScript</button>
+      <button class="md rot2" type="button" data-uso="HTML: es la estructura de todas mis páginas, desde la landing hasta el laboratorio de temas.">HTML</button>
+      <button class="md rot3" type="button" data-uso="CSS: lo uso para el diseño, las animaciones y los temas con variables CSS.">CSS</button>
+      <button class="pq" type="button" data-uso="Bootstrap 5: es la base de la landing y del laboratorio de temas, para armar la rejilla y los componentes rápido.">Bootstrap 5</button>
+      <button class="pq rot2" type="button" data-uso="Módulos ES: separo el código de JavaScript en archivos para que cada parte tenga una sola función.">Módulos ES</button>
+      <button class="gr sol rot3" type="button" data-uso="Git: lo uso para controlar las versiones de mis proyectos y guardar cada cambio.">Git</button>
+      <button class="md" type="button" data-uso="GitHub: es donde publico mis proyectos. Puedes ver mi trabajo en github.com/juanjo-0164.">GitHub</button>
+      <button class="pq rot1" type="button" data-uso="LocalStorage: guarda los datos en el navegador para que no se pierdan al recargar la página.">LocalStorage</button>
+      <button class="pq" type="button" data-uso="SQL: practico consultas para trabajar con bases de datos. Es una de las áreas que sigo fortaleciendo.">SQL</button>
+      <button class="pq rot3" type="button" data-uso="Diseño responsivo: cada página la pruebo para que se vea bien en el celular y en el computador.">Diseño responsivo</button>
+    </div>
+    <p class="explica" id="explica" aria-live="polite">Toca una tecnología para ver para qué la uso.</p>
+  </section>
+
+  <section id="sobre-mi" class="seccion" aria-labelledby="t-sobre">
+    <h2 class="titulo" id="t-sobre">Perfil</h2>
+    <div class="sobre">
+      <p class="lado">Me gusta construir cosas que la gente sí usa, y entender lo que pasa detrás de cada clic.</p>
+      <div class="globo">
+        <p>Estudio Análisis y Desarrollo de Software en el SENA. Empecé por curiosidad con la forma en que se ve una página, y hoy me interesa tanto el diseño como la lógica que la hace funcionar.</p>
+        <p>Busco mi primera oportunidad como desarrollador frontend para seguir aprendiendo con un equipo y entregar productos que funcionen bien para quien los usa.</p>
+      </div>
+    </div>
+
+    <div class="tres">
+      <article>
+        <h3>Cómo trabajo</h3>
+        <p>Primero entiendo qué necesita el usuario, después dibujo la estructura y al final cuido los detalles visuales y el código.</p>
+      </article>
+      <article>
+        <h3>Lo que me importa</h3>
+        <p>Que el código sea limpio, que se entienda y que la página se vea bien en el celular y en el computador.</p>
+      </article>
+      <article>
+        <h3>Lo que sigo aprendiendo</h3>
+        <p>Frameworks de JavaScript, bases de datos y cómo conectar el frontend con una API real.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="actitud" class="seccion" aria-labelledby="t-actitud">
+    <h2 class="titulo" id="t-actitud">Habilidades blandas</h2>
+    <div class="blandas">
+      <article class="blanda b1">
+        <h3>Trabajo en equipo</h3>
+        <p class="situacion">ZYRA fue un proyecto de grupo. Me tocó organizar el trabajo y coordinar la interfaz para que todos avanzáramos juntos.</p>
+      </article>
+      <article class="blanda b2">
+        <h3>Aprendizaje autónomo</h3>
+        <p class="situacion">Practiqué SQL y Bootstrap por mi cuenta, más allá de lo que pedía el curso.</p>
+      </article>
+      <article class="blanda b3">
+        <h3>Resolución de problemas</h3>
+        <p class="situacion">En el Mini Inventario trabajé para que los datos se guardaran con LocalStorage y no se perdieran al recargar la página.</p>
+      </article>
+      <article class="blanda b4">
+        <h3>Pensar en quien usa</h3>
+        <p class="situacion">Antes de programar, pienso en qué necesita la persona que va a usar la página y cómo lo va a encontrar.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="formacion" class="seccion" aria-labelledby="t-formacion">
+    <h2 class="titulo" id="t-formacion">Formación</h2>
+    <ol class="linea-tiempo">
+      <li>
+        <h3>Análisis y Desarrollo de Software (ADSO)</h3>
+        <p class="sub">SENA · En curso</p>
+        <p>Programación, bases de datos, modelado de sistemas y desarrollo de aplicaciones web.</p>
+      </li>
+      <li>
+        <h3>Diseño frontend</h3>
+        <p class="sub">Curso complementario · SENA</p>
+        <p>Maquetación de interfaces y componentes con HTML, CSS y Bootstrap.</p>
+      </li>
+      <li>
+        <h3>Bocetación de diseño y UX/UI</h3>
+        <p class="sub">Curso complementario · SENA</p>
+        <p>Análisis de aplicaciones reales, diferencias entre experiencia e interfaz, y diseño de pantallas antes de programar.</p>
+      </li>
+      <li>
+        <h3>Derechos fundamentales en el trabajo</h3>
+        <p class="sub">Curso complementario · SENA</p>
+        <p>Ciudadanía laboral, convenios de la OIT y mecanismos de protección de derechos.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section id="contacto" class="contacto" aria-labelledby="t-contacto">
+    <div class="circulo" aria-hidden="true"></div>
+    <h2 id="t-contacto">Contacto</h2>
+    <p>Si tienes un proyecto, una vacante o quieres conversar sobre desarrollo web, escríbeme.</p>
+    <div class="acciones">
+      <a class="fuerte" href="mailto:juan.sena.0164@gmail.com">Enviar correo</a>
+      <button class="copiar" id="copiar" type="button" data-correo="juan.sena.0164@gmail.com">Copiar correo</button>
+      <a class="suave" href="https://github.com/juanjo-0164">Ver mi GitHub</a>
+    </div>
+  </section>
+
+  <footer>Juan José Estrada Salazar</footer>
+</div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fino = window.matchMedia('(pointer: fine)').matches;
+
+  // 1. Escritura del rol (una sola vez)
+  var rol = document.getElementById('rol');
+  var texto = rol.textContent;
+  if (!reduce) {
+    rol.textContent = '';
+    var i = 0;
+    var escribe = setInterval(function () {
+      rol.textContent = texto.slice(0, ++i);
+      if (i >= texto.length) { clearInterval(escribe); rol.classList.add('listo'); }
+    }, 45);
+  } else {
+    rol.classList.add('listo');
+  }
+
+  // 2. Brillo que sigue el cursor
+  var halo = document.getElementById('halo');
+  if (fino && !reduce) {
+    window.addEventListener('pointermove', function (e) {
+      halo.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)';
+      halo.classList.add('activo');
+    });
+    document.addEventListener('pointerleave', function () { halo.classList.remove('activo'); });
+  }
+
+  // 3. Tarjetas que se inclinan con el mouse
+  if (fino && !reduce) {
+    document.querySelectorAll('[data-inclinable]').forEach(function (c) {
+      c.addEventListener('pointermove', function (e) {
+        var r = c.getBoundingClientRect();
+        var x = (e.clientX - r.left) / r.width - .5;
+        var y = (e.clientY - r.top) / r.height - .5;
+        c.style.setProperty('--ty', (x * 8).toFixed(2) + 'deg');
+        c.style.setProperty('--tx', (-y * 8).toFixed(2) + 'deg');
+      });
+      c.addEventListener('pointerleave', function () {
+        c.style.setProperty('--tx', '0deg');
+        c.style.setProperty('--ty', '0deg');
+      });
+    });
+  }
+
+  // 4. Detalles desplegables de proyectos
+  document.querySelectorAll('.caso .boton[aria-expanded]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var caso = b.closest('.caso');
+      var abierto = caso.classList.toggle('abierto');
+      b.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+      b.textContent = abierto ? 'Cerrar detalle' : 'Ver detalle';
+    });
+  });
+
+  // 5. Explicación de cada tecnología
+  var explica = document.getElementById('explica');
+  var botones = document.querySelectorAll('.nube button');
+  botones.forEach(function (b) {
+    b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('click', function () {
+      botones.forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+      b.setAttribute('aria-pressed', 'true');
+      explica.textContent = b.getAttribute('data-uso');
+    });
+  });
+
+  // 6. Cambio de tema claro / oscuro
+  var tema = document.getElementById('tema');
+  tema.addEventListener('click', function () {
+    var html = document.documentElement;
+    var claro = html.getAttribute('data-theme') === 'light';
+    html.setAttribute('data-theme', claro ? 'dark' : 'light');
+    tema.textContent = claro ? '☾' : '☀';
+  });
+
+  // 7. Copiar correo
+  var copiar = document.getElementById('copiar');
+  copiar.addEventListener('click', function () {
+    var correo = copiar.getAttribute('data-correo');
+    var marcar = function (txt) {
+      copiar.textContent = txt;
+      copiar.classList.add('ok');
+      setTimeout(function () {
+        copiar.textContent = 'Copiar correo';
+        copiar.classList.remove('ok');
+      }, 2000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(correo).then(function () {
+        marcar('¡Correo copiado!');
+      }, function () {
+        marcar(correo);
+      });
+    } else {
+      marcar(correo);
+    }
+  });
+
+  // 8. Resaltar la sección activa en la barra
+  var enlaces = document.querySelectorAll('.barra a[href^="#"]');
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (en) {
+        if (en.isIntersecting) {
+          enlaces.forEach(function (a) {
+            a.classList.toggle('activa', a.getAttribute('href') === '#' + en.target.id);
+          });
+        }
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    document.querySelectorAll('section[id]').forEach(function (s) { obs.observe(s); });
+  }
+
+  // 9. Lluvia de código
+  var canvas = document.getElementById('lluvia');
+  var ctx = canvas.getContext('2d');
+  var botonLluvia = document.getElementById('lluvia-btn');
+  var simbolos = '01{}<>;=()/+*#&$:[]ab cdefhjkmnpqrstuvwxyz'.split('');
+  var tam = 16;
+  var columnas = [];
+  var lluviaActiva = false;
+  var ultimo = 0;
+
+  function ajustar() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var n = Math.floor(window.innerWidth / tam);
+    columnas = [];
+    for (var c = 0; c < n; c++) {
+      columnas.push({
+        y: Math.random() * -window.innerHeight / tam,
+        vel: .4 + Math.random() * .9
+      });
+    }
+  }
+
+  function dibujar(t) {
+    requestAnimationFrame(dibujar);
+    if (!lluviaActiva || document.hidden) return;
+    if (t - ultimo < 60) return;
+    ultimo = t;
+    var claro = document.documentElement.getAttribute('data-theme') === 'light';
+    var color = claro ? '#1E7A57' : '#8BE0BC';
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    ctx.font = '600 ' + tam + 'px IBM Plex Mono, ui-monospace, Menlo, monospace';
+    var alto = window.innerHeight;
+    for (var c = 0; c < columnas.length; c++) {
+      var col = columnas[c];
+      var x = c * tam;
+      var y = col.y * tam;
+      ctx.fillStyle = color;
+      ctx.globalAlpha = .9;
+      ctx.fillText(simbolos[Math.floor(Math.random() * simbolos.length)], x, y);
+      ctx.globalAlpha = .35;
+      ctx.fillText(simbolos[Math.floor(Math.random() * simbolos.length)], x, y - tam);
+      col.y += col.vel;
+      if (y > alto && Math.random() > .975) {
+        col.y = Math.random() * -20;
+        col.vel = .4 + Math.random() * .9;
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  ajustar();
+  window.addEventListener('resize', ajustar);
+  if (!lluviaActiva) canvas.classList.add('apagada');
+  botonLluvia.setAttribute('aria-pressed', lluviaActiva ? 'true' : 'false');
+  botonLluvia.addEventListener('click', function () {
+    lluviaActiva = !lluviaActiva;
+    canvas.classList.toggle('apagada', !lluviaActiva);
+    botonLluvia.setAttribute('aria-pressed', lluviaActiva ? 'true' : 'false');
+    if (!lluviaActiva) ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  });
+  requestAnimationFrame(dibujar);
+
+  // 12. Versión para empresas (impresión a PDF)
+  var btnPdf = document.getElementById('btn-pdf');
+  if (btnPdf) btnPdf.addEventListener('click', function () { window.print(); });
+
+  // 11. Menú flotante en celular
+  var barra = document.getElementById('barra');
+  var menuBtn = document.getElementById('menu-btn');
+  function alternarMenu(forzar) {
+    var abrir = typeof forzar === 'boolean' ? forzar : !barra.classList.contains('abierta');
+    barra.classList.toggle('abierta', abrir);
+    menuBtn.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+    menuBtn.setAttribute('aria-label', abrir ? 'Cerrar menú' : 'Abrir menú');
+    menuBtn.textContent = abrir ? '✕' : '☰';
+  }
+  menuBtn.addEventListener('click', function () { alternarMenu(); });
+  barra.querySelectorAll('.enlaces a').forEach(function (a) {
+    a.addEventListener('click', function () { alternarMenu(false); });
+  });
+
+  // 10. Música ambiente generada en el navegador (Web Audio)
+  var botonMusica = document.getElementById('musica');
+  var audio = null, master = null, timers = [], paso = 0;
+  var acordes = [
+    [261.63, 329.63, 392.00, 493.88], // Do mayor con séptima
+    [220.00, 261.63, 329.63, 392.00], // La menor con séptima
+    [174.61, 220.00, 261.63, 329.63], // Fa mayor con séptima
+    [196.00, 246.94, 293.66, 392.00]  // Sol
+  ];
+  var escala = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
+
+  function tocarAcorde() {
+    var t = audio.currentTime;
+    var acorde = acordes[paso % acordes.length];
+    var pianoNota = function (f, st, dur, vol) {
+      var o = audio.createOscillator();
+      var g = audio.createGain();
+      o.type = 'triangle';
+      o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, st);
+      g.gain.exponentialRampToValueAtTime(vol, st + .01);
+      g.gain.exponentialRampToValueAtTime(0.0001, st + dur);
+      o.connect(g).connect(master);
+      o.start(st);
+      o.stop(st + dur + .05);
+    };
+    acorde.forEach(function (f, i) {
+      pianoNota(f, t + i * .5, 3.4, .08);
+      pianoNota(f * 2, t + i * .5, 1.8, .015);
+    });
+    paso++;
+  }
+
+  function tocarNota() {
+    if (Math.random() > .55) return;
+    var t = audio.currentTime;
+    var o = audio.createOscillator();
+    var g = audio.createGain();
+    o.type = 'triangle';
+    o.frequency.value = escala[Math.floor(Math.random() * escala.length)];
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(.05, t + .03);
+    g.gain.linearRampToValueAtTime(0, t + 1.1);
+    o.connect(g).connect(master);
+    o.start(t);
+    o.stop(t + 1.2);
+  }
+
+  function encenderMusica() {
+    if (!audio) {
+      audio = new (window.AudioContext || window.webkitAudioContext)();
+      var filtro = audio.createBiquadFilter();
+      filtro.type = 'lowpass';
+      filtro.frequency.value = 1500;
+      master = audio.createGain();
+      master.gain.value = 0;
+      master.connect(filtro).connect(audio.destination);
+    }
+    audio.resume();
+    master.gain.cancelScheduledValues(audio.currentTime);
+    master.gain.linearRampToValueAtTime(.7, audio.currentTime + 2);
+    paso = 0;
+    tocarAcorde();
+    timers.push(setInterval(tocarAcorde, 4000));
+    timers.push(setInterval(tocarNota, 1500));
+  }
+
+  function apagarMusica() {
+    timers.forEach(clearInterval);
+    timers = [];
+    if (!audio) return;
+    master.gain.cancelScheduledValues(audio.currentTime);
+    master.gain.linearRampToValueAtTime(0, audio.currentTime + .6);
+    setTimeout(function () { audio.suspend(); }, 700);
+  }
+
+  botonMusica.addEventListener('click', function () {
+    var encendida = botonMusica.getAttribute('aria-pressed') === 'true';
+    if (encendida) {
+      apagarMusica();
+      botonMusica.setAttribute('aria-pressed', 'false');
+      botonMusica.textContent = '♪ Música';
+    } else {
+      encenderMusica();
+      botonMusica.setAttribute('aria-pressed', 'true');
+      botonMusica.textContent = '♪ Sonando';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
